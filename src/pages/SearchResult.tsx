@@ -3,7 +3,7 @@
 import React from "react";
 import { useSearchParams } from "react-router-dom";
 import styled from "styled-components";
-import Video from "../SearchResult/Video";
+import Video from "../components/searchPage/Video";
 import { VideoPreview } from "../types/searchResult.type";
 
 const sampleVideos: VideoPreview[] = [
