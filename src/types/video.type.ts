@@ -8,6 +8,7 @@ export interface Video{
     viewCount: number;
     createdAt: string; 
     duration: string;
+    channelId?: string;
 }
 
 // 채널 정보 타입

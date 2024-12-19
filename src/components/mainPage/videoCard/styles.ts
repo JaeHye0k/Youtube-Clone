@@ -60,7 +60,7 @@ export const Title = styled.h3`
     font-weight: 500;
     line-height: 1.4;
     color: #0f0f0f;
-    margin: 0 0 1px 0;
+    margin: 0;
     overflow: hidden;
     text-overflow: ellipsis;
     display: -webkit-box;
@@ -72,9 +72,13 @@ export const Channel = styled.span`
     font-size: 14px;
     color: #606060;
     display: block;
-    margin-bottom: 1px;
-`;
+    margin: 4px 0;
+    cursor: pointer;
 
+    &:hover {
+        color: #030303;
+    }
+`;
 export const Stats = styled.div`
     display: flex;
     align-items: center;
@@ -133,4 +137,25 @@ export const PreviewOverlay = styled.div`
     ${ThumbnailWrapper}:hover & {
         opacity: 1;
     }
+`;
+
+export const VideoTitleRow = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 4px;
+`;
+
+export const TitleAndDropdown = styled.div`
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  align-items: flex-start;
+`;
+
+export const TitleRow = styled.div`
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 4px;
 `;
