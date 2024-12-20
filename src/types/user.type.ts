@@ -14,3 +14,15 @@ export interface SubscriptionResponse {
     channelId: string;
     profileLocation: string;
 }
+
+export interface JoinBody {
+    email: string;
+    password: string;
+    name: string;
+    description?: string;
+}
+
+export interface LoginBody {
+    email: string;
+    password: string;
+}

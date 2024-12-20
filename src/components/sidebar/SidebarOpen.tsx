@@ -1,4 +1,3 @@
-import { useLayoutStore } from "@stores/layoutStore";
 import { styled } from "styled-components";
 import HeaderStart from "../header/HeaderStart";
 import { useAuth } from "@hooks/useAuth";

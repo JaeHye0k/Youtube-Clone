@@ -1,14 +1,19 @@
 import Dropdown from "@components/common/Dropdown";
 import { styled } from "styled-components";
 import { useUser } from "@hooks/useUser";
-
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { ReactComponent as LogoutIcon } from "@assets/header/logout.svg";
+import { useAuth } from "@hooks/useAuth";
 
 const ProfileButton = () => {
     const { user } = useUser();
+    const { userLogout } = useAuth();
     const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
 
+    const handleLogout = () => {
+        userLogout();
+    };
     return (
         <ProfileButtonStyle>
             <Dropdown
@@ -35,6 +40,12 @@ const ProfileButton = () => {
                             </div>
                         </div>
                     </div>
+                    <MenuSection>
+                        <MenuItem onClick={handleLogout}>
+                            <LogoutIcon />
+                            <div className="label">로그아웃</div>
+                        </MenuItem>
+                    </MenuSection>
                 </DropdownPannel>
             </Dropdown>
         </ProfileButtonStyle>
@@ -117,4 +128,24 @@ const ProfileButtonStyle = styled.div`
     }
 `;
 
+const MenuSection = styled.section`
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    padding: 8px 0;
+`;
+const MenuItem = styled.div`
+    display: flex;
+    align-items: center;
+    padding: 0 36px 0 16px;
+    color: #0f0f0f;
+    height: 48px;
+    font-size: 14px;
+    cursor: pointer;
+
+    svg {
+        margin-right: 16px;
+    }
+    &:hover {
+        background: rgba(0, 0, 0, 0.05);
+    }
+`;
 export default ProfileButton;

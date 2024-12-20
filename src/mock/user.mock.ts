@@ -41,4 +41,10 @@ export const authHandlers = [
             });
         }
     }),
+    http.post(baseURL("/user/join"), async ({ request }) => {
+        const req = await request.json();
+        return HttpResponse.json(req, {
+            status: 201,
+        });
+    }),
 ];
