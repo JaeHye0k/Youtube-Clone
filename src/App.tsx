@@ -8,6 +8,7 @@ import { GlobalStyle } from "./style/global";
 import Login from "./pages/Login";
 import MainPage from "./pages/MainPage";
 import SearchResult from "./pages/SearchResult";
+import WatchPage from './pages/WatchPage';
 
 const queryClient = new QueryClient({
     defaultOptions: {
@@ -42,6 +43,19 @@ const router = createBrowserRouter([
             </Layout>
         ),
         errorElement: <Error />,
+    },
+    {
+        path: "/watch",
+        element: (
+            <Layout>
+                <WatchPage />
+            </Layout>
+        ),
+        errorElement: <Error />,
+    },
+    {
+        path: "/watch/:videoId",
+        element: <WatchPage />,
     },
 ]);
 

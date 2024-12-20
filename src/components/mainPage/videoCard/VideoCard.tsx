@@ -1,12 +1,11 @@
 import React, { useState, useCallback } from "react";
-import { Link } from "react-router-dom";
-import { VideoCardProps } from "./types";
+import { Link, useNavigate } from "react-router-dom";
+import { VideoCardProps } from "@@types/video.type";
 import { formatVideoCount, formatDate } from "../../../utils/format";
 import VideoCardSkeleton from "./VideoCardSkeleton";
 import VideoPreviewPlayer from "./VideoPreviewPlayer";
 import VideoDropdown from "../VideoDropdown";
 import {
-    Container,
     ThumbnailWrapper,
     Info,
     Title,
@@ -37,7 +36,9 @@ const ChannelTooltip = styled.div`
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 `;
 
-const VideoCard: React.FC<VideoCardProps> = ({ video, onClick, size = "medium", isLoading }) => {
+const VideoCard: React.FC<VideoCardProps> = ({ video, size = "medium", isLoading }) => {
+    const navigate = useNavigate();
+
     const [metadata, setMetadata] = useState({
         isHovered: false,
         isMuted: true,
@@ -72,6 +73,12 @@ const VideoCard: React.FC<VideoCardProps> = ({ video, onClick, size = "medium", 
     const handleChannelMouseEnter = () => setShowChannelTooltip(true);
     const handleChannelMouseLeave = () => setShowChannelTooltip(false);
 
+    const handleClick = () => {
+        if (video?.id) {
+            navigate(`/watch?v=${video.id}`);
+        }
+    };
+
     if (isLoading) {
         return <VideoCardSkeleton size={size} />;
     }
@@ -79,7 +86,7 @@ const VideoCard: React.FC<VideoCardProps> = ({ video, onClick, size = "medium", 
     if (!video) return null;
 
     return (
-        <Container size={size} onClick={onClick}>
+        <Container size={size} onClick={handleClick}>
             <ThumbnailWrapper>
                 <VideoPreviewPlayer
                     thumbnailUrl={video.thumbnailUrl}
@@ -106,17 +113,22 @@ const VideoCard: React.FC<VideoCardProps> = ({ video, onClick, size = "medium", 
                         onMouseLeave={handleChannelMouseLeave}
                         style={{ textDecoration: "none" }}
                     >
-                        <Channel>{video.channel}</Channel>
+                        <Channel>{video.channelTitle}</Channel>
                     </Link>
-                    {showChannelTooltip && <ChannelTooltip>{video.channel}</ChannelTooltip>}
+                    {showChannelTooltip && <ChannelTooltip>{video.channelTitle}</ChannelTooltip>}
                 </ChannelWrapper>
                 <Stats>
                     <Views>{formatVideoCount(video.viewCount)} • </Views>
-                    <Date>{formatDate(video.createdAt)}</Date>
+                    <Date>{formatDate(video.publishedAt)}</Date>
                 </Stats>
             </Info>
         </Container>
     );
 };
+
+const Container = styled.div<{ size: 'small' | 'medium' | 'large' }>`
+    cursor: pointer;
+    position: relative;
+`;
 
 export default VideoCard;

@@ -1,13 +1,12 @@
 import { fakerKO as faker } from "@faker-js/faker";
 import { http, HttpResponse, delay } from "msw";
-import { Video, VideoListResponse } from "../types/video.type";
+import { Video, VideoListResponse, Channel } from "../types/video.type";
 import { baseURL } from "../utils/baseURL";
 import { FORMDATA } from "../constants/formData";
 
 const generateThumbnail = () => {
-    // 더 안정적인 Picsum API 사용
-    const randomId = faker.number.int({ min: 1, max: 1000 });
-    return `https://picsum.photos/id/${randomId}/1280/720`; // 16:9 비율의 고정된 크기
+    const randomId = faker.number.int({ min: 1, max: 200 });
+    return `https://picsum.photos/seed/${randomId}/1280/720`;
 };
 
 const generateVideoTitle = (): string => {
@@ -25,14 +24,12 @@ const generateVideoTitle = (): string => {
     return `${faker.helpers.arrayElement(subjects)}${faker.lorem.sentence(3)} ${faker.helpers.arrayElement(types)}`;
 };
 
-const generateChannelName = (): string => {
-    const suffixes = ["TV", "채널", "STUDIO", "Official", "Productions"];
-    const prefix = faker.person.lastName();
-    return (
-        faker.helpers.maybe(() => `${prefix}${faker.helpers.arrayElement(suffixes)}`, {
-            probability: 0.3,
-        }) || faker.company.name()
-    );
+const generateChannel = (): Channel => {
+    return {
+        id: faker.string.uuid(),
+        title: faker.company.name(),
+        thumbnail: generateThumbnail()
+    };
 };
 
 const generateMockVideo = (): Video => {
@@ -41,12 +38,28 @@ const generateMockVideo = (): Video => {
         min: isShort ? 100000 : 10000,
         max: isShort ? 100000000 : 10000000,
     });
+    const channel = generateChannel();
 
     return {
         id: faker.string.uuid(),
         title: generateVideoTitle(),
-        channel: generateChannelName(),
+        description: faker.lorem.paragraph(),
         thumbnailUrl: generateThumbnail(),
+        videoUrl: faker.helpers.arrayElement([
+            "https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+            "https://storage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
+            "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+            "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
+            "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4",
+        ]),
+        viewCount,
+        publishedAt: faker.date.past({ years: 2 }).toISOString(),
+        channelId: channel.id,
+        channelTitle: channel.title,
+        channelThumbnail: channel.thumbnail,
+        duration: `${faker.number.int({ min: 1, max: 59 })}:${faker.number.int({ min: 10, max: 59 })}`,
+        createdAt: faker.date.past({ years: 2 }).toISOString(),
+        channel,
         previewUrl: faker.helpers.maybe(
             () => {
                 return `https://storage.googleapis.com/gtv-videos-bucket/sample/${faker.helpers.arrayElement(
@@ -66,9 +79,8 @@ const generateMockVideo = (): Video => {
             },
             { probability: 0.7 },
         ),
-        viewCount,
-        createdAt: faker.date.past({ years: 2 }).toISOString(),
-        duration: `${faker.number.int({ min: 1, max: 59 })}:${faker.number.int({ min: 10, max: 59 })}`,
+        likes: faker.number.int({ min: 0, max: 1000000 }),
+        dislikes: faker.number.int({ min: 0, max: 10000 }),
     };
 };
 
@@ -98,6 +110,7 @@ export const videoHandlers = [
 
         return HttpResponse.json(response);
     }),
+
     http.post(baseURL("/channel/videopost"), async ({ request }) => {
         const formData = await request.formData();
 
